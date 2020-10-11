@@ -24,13 +24,17 @@ namespace CRM.Infrastructure.Persistence
             else
             {
                 services.AddDbContext<ApplicationDbContext>(options =>
-               options.UseSqlServer(
+                options.UseSqlServer(
                    configuration.GetConnectionString("DefaultConnection"),
-                   b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+                   b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName))
+                );
             }
+
             #region Repositories
+
             services.AddTransient(typeof(IGenericRepositoryAsync<>), typeof(GenericRepositoryAsync<>));
             services.AddTransient<IProductRepositoryAsync, ProductRepositoryAsync>();
+
             #endregion
         }
     }

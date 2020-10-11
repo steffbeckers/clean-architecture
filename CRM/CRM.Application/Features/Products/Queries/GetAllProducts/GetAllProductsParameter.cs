@@ -7,6 +7,6 @@ namespace CRM.Application.Features.Products.Queries.GetAllProducts
 {
     public class GetAllProductsParameter : RequestParameter
     {
-
+        public string Name { get; set; }
     }
 }

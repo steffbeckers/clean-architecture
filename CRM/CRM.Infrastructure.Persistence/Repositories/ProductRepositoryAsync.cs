@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace CRM.Infrastructure.Persistence.Repositories
 {
@@ -23,6 +24,16 @@ namespace CRM.Infrastructure.Persistence.Repositories
         {
             return _products
                 .AllAsync(p => p.Barcode != barcode);
+        }
+
+        public async Task<IReadOnlyList<Product>> SearchByNamePagedReponseAsync(int pageNumber, int pageSize, string name)
+        {
+            return await _products
+                .Where(p => p.Name.Contains(name, StringComparison.OrdinalIgnoreCase))
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .AsNoTracking()
+                .ToListAsync();
         }
     }
 }

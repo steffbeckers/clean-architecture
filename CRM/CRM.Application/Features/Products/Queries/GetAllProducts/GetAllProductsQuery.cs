@@ -15,11 +15,14 @@ namespace CRM.Application.Features.Products.Queries.GetAllProducts
     {
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
+        public string Name { get; set; }
     }
+
     public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQuery, PagedResponse<IEnumerable<GetAllProductsViewModel>>>
     {
         private readonly IProductRepositoryAsync _productRepository;
         private readonly IMapper _mapper;
+
         public GetAllProductsQueryHandler(IProductRepositoryAsync productRepository, IMapper mapper)
         {
             _productRepository = productRepository;
@@ -28,9 +31,15 @@ namespace CRM.Application.Features.Products.Queries.GetAllProducts
 
         public async Task<PagedResponse<IEnumerable<GetAllProductsViewModel>>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
         {
+            // Filter params
             var validFilter = _mapper.Map<GetAllProductsParameter>(request);
-            var product = await _productRepository.GetPagedReponseAsync(validFilter.PageNumber, validFilter.PageSize);
-            var productViewModel = _mapper.Map<IEnumerable<GetAllProductsViewModel>>(product);
+            
+            // Retrieve products filtered by name
+            var products = await _productRepository.SearchByNamePagedReponseAsync(validFilter.PageNumber, validFilter.PageSize, validFilter.Name);
+            
+            // Mapping
+            var productViewModel = _mapper.Map<IEnumerable<GetAllProductsViewModel>>(products);
+            
             return new PagedResponse<IEnumerable<GetAllProductsViewModel>>(productViewModel, validFilter.PageNumber, validFilter.PageSize);
         }
     }

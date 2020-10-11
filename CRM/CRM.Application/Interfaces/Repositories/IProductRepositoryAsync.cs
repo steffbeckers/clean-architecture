@@ -9,5 +9,6 @@ namespace CRM.Application.Interfaces.Repositories
     public interface IProductRepositoryAsync : IGenericRepositoryAsync<Product>
     {
         Task<bool> IsUniqueBarcodeAsync(string barcode);
+        Task<IReadOnlyList<Product>> SearchByNamePagedReponseAsync(int pageNumber, int pageSize, string name);
     }
 }
